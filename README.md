@@ -31,7 +31,8 @@ TemplateVM (archlinux)                     AppVM (このテンプレートを使
 └── pkgs/
     ├── default.nix   # pkgs/ 配下のモジュールをまとめて import
     ├── neovim.nix    # Neovim の設定
-    └── fcitx5.nix    # 日本語入力 (fcitx5 + mozc)
+    ├── fcitx5.nix    # 日本語入力 (fcitx5 + mozc)
+    └── veracrypt.nix # VeraCrypt
 ```
 
 ## セットアップ
@@ -142,6 +143,15 @@ nix flake update     # flake.lock を更新
 pgrep -a fcitx5          # 起動しているか
 fcitx5-diagnose | less   # 環境変数・IM モジュールの診断
 ```
+
+## VeraCrypt
+
+`pkgs/veracrypt.nix` で管理しています。GUI はアプリメニューに `VeraCrypt` として表示されます (`qvm-sync-appmenus` 後)。CLI は `veracrypt --text` で使えます。
+
+- マウントするときは、VeraCrypt が `sudo` を使って自分自身を root として起動します。Qubes の AppVM は sudo にパスワードが要らないので、追加の設定はいりません。
+- AppVM でマウントした内容は、その AppVM 内でしか見えません。また、AppVM をシャットダウンするとマウントも外れます。
+- コンテナファイルは AppVM の `/home` (永続ボリューム) に置いてください。ほかの場所は再起動で消えます。
+- USB デバイス上のボリュームを開くときは、dom0 で `qvm-block attach <appvm> <device>` を実行して、そのブロックデバイスを AppVM に割り当ててからマウントします。
 
 ## カスタマイズ
 
