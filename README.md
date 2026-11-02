@@ -41,7 +41,7 @@ TemplateVM (archlinux)                     AppVM (このテンプレートを使
 1. このリポジトリを TemplateVM に持ち込みます。テンプレートはネットワークを持たないため、別の VM で clone してから `qvm-copy` で送ります。
    ```sh
    # 別の AppVM で
-   git clone <this-repo> archlinux-home-manager
+   git clone https://github.com/Restoration/archlinux-home-manager.git
    qvm-copy archlinux-home-manager   # 送り先にテンプレートを選択
    ```
 2. TemplateVM で `user` として実行します。
