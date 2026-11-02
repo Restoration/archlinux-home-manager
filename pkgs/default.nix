@@ -3,5 +3,6 @@
 {
   imports = [
     ./neovim.nix
+    ./fcitx5.nix
   ];
 }

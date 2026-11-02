@@ -30,7 +30,8 @@ TemplateVM (archlinux)                     AppVM (このテンプレートを使
 ├── home.nix          # Home Manager のエントリポイント
 └── pkgs/
     ├── default.nix   # pkgs/ 配下のモジュールをまとめて import
-    └── neovim.nix    # Neovim の設定
+    ├── neovim.nix    # Neovim の設定
+    └── fcitx5.nix    # 日本語入力 (fcitx5 + mozc)
 ```
 
 ## セットアップ
@@ -119,6 +120,29 @@ nix flake update     # flake.lock を更新
 
 プラグインは lazy.nvim などのプラグインマネージャは使わず、すべて Nix で管理します。追加するには `plugins` に `pkgs.vimPlugins.<name>` を足してください。そうすると AppVM でもネットワークなしで動きます。
 
+## 日本語入力 (fcitx5 + mozc)
+
+`pkgs/fcitx5.nix` で管理しています。
+
+- fcitx5 の本体と mozc は Nix で入れます。
+- Qubes の AppVM にはデスクトップ環境のセッションがないため、`~/.config/autostart/org.fcitx.Fcitx5.desktop` から起動します。起動は qubes-session が行います。
+  - `/etc/xdg/autostart` に同じ名前のファイル (pacman 版) があっても、ユーザー側のこのファイルが優先されます。
+- 入力の切り替えは `Ctrl+Space` か `半角/全角` です。
+- キーボード配列は `us` にしています。JIS キーボードを使う場合は、`pkgs/fcitx5.nix` の `keyboardLayout` を `"jp"` に変えてください。
+- 日本語フォントとして Noto CJK を入れ、fontconfig に登録しています。pacman で入れたアプリからも使えます。
+
+`install.sh` はシステム側の設定も行います。
+
+- pacman で入れた GTK/Qt アプリが fcitx5 を使えるよう、`fcitx5-gtk` と `fcitx5-qt` を pacman で入れます。
+- `/etc/environment` に `GTK_IM_MODULE` / `QT_IM_MODULE` / `XMODIFIERS` / `SDL_IM_MODULE` を書き込みます。Qubes のアプリは qrexec 経由で起動されるため、ログインシェルの設定 (`/etc/profile.d` など) を読みません。そのため `/etc/environment` に書いています。
+
+日本語入力が効かないときは、AppVM で次を確認してください。
+
+```sh
+pgrep -a fcitx5          # 起動しているか
+fcitx5-diagnose | less   # 環境変数・IM モジュールの診断
+```
+
 ## カスタマイズ
 
 | 環境変数                  | 既定値                    | 説明                                  |
@@ -148,6 +172,7 @@ sudo rm -f /etc/systemd/system/home-manager-qubes.service \
            /etc/profile.d/nix-home-manager.sh \
            /nix/var/nix/gcroots/qubes-home-manager
 sudo rm -rf /usr/local/lib/qubes-nix
+sudo sed -i -E '/^(GTK_IM_MODULE|QT_IM_MODULE|XMODIFIERS|SDL_IM_MODULE)=/d' /etc/environment
 sudo pacman -Rns nix
 sudo rm -rf /nix
 ```

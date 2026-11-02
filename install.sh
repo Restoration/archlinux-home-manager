@@ -186,6 +186,30 @@ unset _p
 export PATH XDG_DATA_DIRS
 EOF
 
+# ---------------------------------------------------------------------------
+# 7. 日本語入力 (fcitx5 本体は Home Manager 側。ここではシステム側の設定)
+# ---------------------------------------------------------------------------
+# pacman で入れた GTK/Qt アプリが fcitx5 と通信するための IM モジュール
+log "fcitx5 の IM モジュール (pacman アプリ用) をインストール"
+sudo pacman -S --needed --noconfirm fcitx5-gtk fcitx5-qt
+
+# Qubes のアプリは qrexec 経由で起動されログインシェルを通らないため、
+# pam_env が読む /etc/environment に設定する
+log "/etc/environment に入力メソッドの環境変数を設定"
+ensure_env() {
+  local key="$1" value="$2"
+  sudo touch /etc/environment
+  if sudo grep -qE "^${key}=" /etc/environment; then
+    sudo sed -i -E "s|^${key}=.*|${key}=${value}|" /etc/environment
+  else
+    echo "${key}=${value}" | sudo tee -a /etc/environment >/dev/null
+  fi
+}
+ensure_env GTK_IM_MODULE fcitx
+ensure_env QT_IM_MODULE fcitx
+ensure_env XMODIFIERS "@im=fcitx"
+ensure_env SDL_IM_MODULE fcitx
+
 cat <<EOF
 
 $(printf '\033[1;32m')完了しました。$(printf '\033[0m')
