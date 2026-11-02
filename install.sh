@@ -210,6 +210,17 @@ ensure_env QT_IM_MODULE fcitx
 ensure_env XMODIFIERS "@im=fcitx"
 ensure_env SDL_IM_MODULE fcitx
 
+# ---------------------------------------------------------------------------
+# 8. ログインシェルを zsh に (設定は Home Manager の pkgs/zsh.nix)
+# ---------------------------------------------------------------------------
+# ログインシェル自体は pacman の zsh にする。Nix の zsh を使うと、
+# AppVM で activate が失敗したときにシェルが起動できなくなるため。
+log "zsh をインストールしてログインシェルに設定"
+sudo pacman -S --needed --noconfirm zsh
+if [[ "$(getent passwd "$HM_USER" | cut -d: -f7)" != "/usr/bin/zsh" ]]; then
+  sudo usermod -s /usr/bin/zsh "$HM_USER"
+fi
+
 cat <<EOF
 
 $(printf '\033[1;32m')完了しました。$(printf '\033[0m')

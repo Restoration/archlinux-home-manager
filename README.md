@@ -32,7 +32,8 @@ TemplateVM (archlinux)                     AppVM (このテンプレートを使
     ├── default.nix   # pkgs/ 配下のモジュールをまとめて import
     ├── neovim.nix    # Neovim の設定
     ├── fcitx5.nix    # 日本語入力 (fcitx5 + mozc)
-    └── veracrypt.nix # VeraCrypt
+    ├── veracrypt.nix # VeraCrypt
+    └── zsh.nix       # zsh の設定
 ```
 
 ## セットアップ
@@ -153,6 +154,16 @@ fcitx5-diagnose | less   # 環境変数・IM モジュールの診断
 - コンテナファイルは AppVM の `/home` (永続ボリューム) に置いてください。ほかの場所は再起動で消えます。
 - USB デバイス上のボリュームを開くときは、dom0 で `qvm-block attach <appvm> <device>` を実行して、そのブロックデバイスを AppVM に割り当ててからマウントします。
 
+## zsh
+
+`pkgs/zsh.nix` で管理しています。
+
+- ログインシェルは pacman で入れた `/usr/bin/zsh` です (`install.sh` が `usermod -s` で設定します)。`~/.zshrc` などの設定とプラグインは Home Manager で管理します。
+  - Nix の zsh をログインシェルにしない理由: AppVM の起動時に activate が失敗すると Nix 側の zsh が見つからず、端末を開けなくなるためです。
+- 補完、autosuggestions、syntax-highlighting を有効にしています。履歴は `~/.local/share/zsh/history` に保存し、端末間で共有します。
+- `hms` エイリアスで `~/archlinux-home-manager/install.sh` を実行できます。設定を変えたら TemplateVM で `hms` を実行してください。
+- `/etc/zsh/zprofile` が `/etc/profile` を読み込むので、Nix の PATH はログイン時に通ります。
+
 ## カスタマイズ
 
 | 環境変数                  | 既定値                    | 説明                                  |
@@ -183,6 +194,7 @@ sudo rm -f /etc/systemd/system/home-manager-qubes.service \
            /nix/var/nix/gcroots/qubes-home-manager
 sudo rm -rf /usr/local/lib/qubes-nix
 sudo sed -i -E '/^(GTK_IM_MODULE|QT_IM_MODULE|XMODIFIERS|SDL_IM_MODULE)=/d' /etc/environment
+sudo usermod -s /bin/bash user
 sudo pacman -Rns nix
 sudo rm -rf /nix
 ```
