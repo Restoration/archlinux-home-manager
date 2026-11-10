@@ -7,6 +7,7 @@
     ./veracrypt.nix
     ./gimp.nix
     ./loupe.nix
+    ./ghostty.nix
     ./zsh.nix
   ];
 }

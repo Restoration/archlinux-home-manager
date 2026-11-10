@@ -138,6 +138,15 @@ run_nix env HOME_MANAGER_BACKUP_EXT="$BACKUP_EXT" "$ACTIVATION/activate"
 log "GC root を作成: $GCROOT -> $ACTIVATION"
 sudo ln -sfn "$ACTIVATION" "$GCROOT"
 
+# Nix のアプリ (Ghostty など) が OpenGL を使えるよう、Nix 版 Mesa を
+# /run/opengl-driver に置く tmpfiles.d 設定を入れる (targets.genericLinux.gpu)。
+# /etc はルートボリュームなので AppVM にもそのまま継承される。
+GPU_SETUP="$ACTIVATION/home-path/bin/non-nixos-gpu-setup"
+if [[ -x "$GPU_SETUP" ]]; then
+  log "Nix アプリ用の GPU ドライバ (Mesa) を設定"
+  sudo "$(readlink -f "$GPU_SETUP")"
+fi
+
 # ---------------------------------------------------------------------------
 # 5. AppVM 起動時に Home Manager を activate する systemd サービス
 # ---------------------------------------------------------------------------

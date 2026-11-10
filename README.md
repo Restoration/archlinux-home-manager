@@ -35,6 +35,7 @@ TemplateVM (archlinux)                     AppVM (このテンプレートを使
     ├── veracrypt.nix # VeraCrypt
     ├── gimp.nix      # GIMP
     ├── loupe.nix     # GNOME Image Viewer (Loupe)
+    ├── ghostty.nix   # Ghostty
     └── zsh.nix       # zsh の設定
 ```
 
@@ -165,6 +166,14 @@ fcitx5-diagnose | less   # 環境変数・IM モジュールの診断
 ## GNOME Image Viewer (Loupe)
 
 `pkgs/loupe.nix` で管理しています。アプリメニューに `Image Viewer` として表示されます (`qvm-sync-appmenus` 後)。CLI からは `loupe <ファイル>` で開けます。
+
+## Ghostty
+
+`pkgs/ghostty.nix` で管理しています。アプリメニューに `Ghostty` として表示されます (`qvm-sync-appmenus` 後)。設定は `programs.ghostty.settings` に書きます (`~/.config/ghostty/config` が生成されます)。
+
+- Ghostty は OpenGL が必須です。Nix のアプリは Arch 側の GPU ドライバを使えないので、`install.sh` が Home Manager の `non-nixos-gpu-setup` を実行して、Nix 版の Mesa を `/run/opengl-driver` に置くようにしています (`/etc/tmpfiles.d/non-nixos-gpu.conf`)。
+- Qubes の AppVM には GPU が無いので、描画は CPU (Mesa の llvmpipe) で行われます。
+- 起動しないときは、AppVM で `ls -l /run/opengl-driver` を実行してリンクがあるか確認し、無ければ TemplateVM で `./install.sh` を再実行してください。
 
 ## zsh
 
