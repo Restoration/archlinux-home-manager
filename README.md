@@ -33,6 +33,7 @@ TemplateVM (archlinux)                     AppVM (このテンプレートを使
     ├── neovim.nix    # Neovim の設定
     ├── fcitx5.nix    # 日本語入力 (fcitx5 + mozc)
     ├── veracrypt.nix # VeraCrypt
+    ├── gimp.nix      # GIMP
     └── zsh.nix       # zsh の設定
 ```
 
@@ -153,6 +154,12 @@ fcitx5-diagnose | less   # 環境変数・IM モジュールの診断
 - AppVM でマウントした内容は、その AppVM 内でしか見えません。また、AppVM をシャットダウンするとマウントも外れます。
 - コンテナファイルは AppVM の `/home` (永続ボリューム) に置いてください。ほかの場所は再起動で消えます。
 - USB デバイス上のボリュームを開くときは、dom0 で `qvm-block attach <appvm> <device>` を実行して、そのブロックデバイスを AppVM に割り当ててからマウントします。
+
+## GIMP
+
+`pkgs/gimp.nix` で管理しています。アプリメニューに `GNU Image Manipulation Program` として表示されます (`qvm-sync-appmenus` 後)。
+
+- 設定やプラグインは AppVM の `~/.config/GIMP` に保存されます。
 
 ## zsh
 

@@ -5,6 +5,7 @@
     ./neovim.nix
     ./fcitx5.nix
     ./veracrypt.nix
+    ./gimp.nix
     ./zsh.nix
   ];
 }
