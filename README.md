@@ -34,6 +34,7 @@ TemplateVM (archlinux)                     AppVM (このテンプレートを使
     ├── fcitx5.nix    # 日本語入力 (fcitx5 + mozc)
     ├── veracrypt.nix # VeraCrypt
     ├── gimp.nix      # GIMP
+    ├── loupe.nix     # GNOME Image Viewer (Loupe)
     └── zsh.nix       # zsh の設定
 ```
 
@@ -160,6 +161,10 @@ fcitx5-diagnose | less   # 環境変数・IM モジュールの診断
 `pkgs/gimp.nix` で管理しています。アプリメニューに `GNU Image Manipulation Program` として表示されます (`qvm-sync-appmenus` 後)。
 
 - 設定やプラグインは AppVM の `~/.config/GIMP` に保存されます。
+
+## GNOME Image Viewer (Loupe)
+
+`pkgs/loupe.nix` で管理しています。アプリメニューに `Image Viewer` として表示されます (`qvm-sync-appmenus` 後)。CLI からは `loupe <ファイル>` で開けます。
 
 ## zsh
 

@@ -6,6 +6,7 @@
     ./fcitx5.nix
     ./veracrypt.nix
     ./gimp.nix
+    ./loupe.nix
     ./zsh.nix
   ];
 }
